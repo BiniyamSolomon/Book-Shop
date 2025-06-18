@@ -1,0 +1,59 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciao Book Shop</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}"> 
+    {% block styling %}
+
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <div>
+            <nav>
+                <h2 id="title"><a href="{% url 'books:home' %}">Ciao Book Shop</a></h2>
+                <ul>
+                    <li><a href="{% url 'books:about' %}">About Us</a></li>
+
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'books:cart'%}">Cart</a></li>
+                    <li><a href="{% url 'books:orders'%}">Order</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li id="name">{{user.username}}</li>
+                    <li><a href="{% url 'books:logout_view' %}">Logout</a></li>
+
+                    {% else %}
+
+                    <li><a href="{% url 'books:login_view' %}">Login</a></li>
+
+                    <li><a href="{% url 'books:register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        {% block content %}
+
+        {% endblock %}
+    </main>
+    <footer>
+        <div>&copy; Ciao Book Shop <span class="year2"></span><span id="year"></span></div>
+    </footer>
+
+    <script>
+        const year = new Date().toLocaleTimeString();
+        const toEdit = document.getElementById('year');
+        toEdit.textContent = year;
+
+        const year2 = new Date().getFullYear();
+        const toEdit2 = document.getElementsByClassName('year2');
+        toEdit2.textContent = year2;
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main">
+    <div class="hero-section">
+        <h1>Welcome to Ciao Book Shop</h1>
+        <p><i>"There is no friend as loyal as a book"</i> - Ernest Hemingway</p>
+    </div>
+
+
+    <div class="search">
+        <form method="get" action="{% url 'books:home' %}">
+                <input type="text" name="q" value="{{query_searched}}" placeholder="Search by title or author...">
+                <button type="submit">Search</button>
+        </form>
+    </div>
+
+
+    
+    <div class="book-list">
+        {% for book in books %}
+        <div class="book">
+            <img src="{{book.image.url}}"> 
+            <div class="book-content">
+                <h3 id="book_content_title">Title: {{book.title}}</h3>
+                <p>By: {{book.author}}</p>
+                <p>${{book.price}}</p>
+                <p>{{book.stock_status}}</p>
+                <a href="{% url 'books:detail' book.id %}"><button id="button-left">View Details</button></a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'books:add_to_cart' book.id %}"><button id="button-right" >Add to Cart</button></a>
+                {% else %}
+                <a href="{% url 'books:login_view'%}"><button id="button-right" >Login to Buy</button></a>
+                {% endif %}
+            </div>                            
+        </div>
+        {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block styling %}
+
+<style>
+
+    .main {
+        width: 1300px;
+        margin: -10px auto 0 auto;
+        min-height: 100vh;
+        background-color: rgba(158, 170, 181, 0.149); 
+        position: relative;
+        z-index: 1;  
+         
+    }
+
+   .hero-section {
+    width: 500px;
+    margin: 10px auto;
+    height: 100px;
+    padding: 10px;
+   }
+
+   .hero-section h1, p {
+    padding: 10px 0;
+    
+    
+   }
+
+   .hero-section p {
+    font-size: 17px;
+   }
+
+
+   .search {
+    width: 1200px;
+    margin: 10px auto;
+    height: 40px;
+   }
+
+   .search form input {
+    width: 900px;
+    height: 42px;
+    margin-left: 30px;
+    border: 1px rgba(0, 0, 0, 0.59) solid;
+    border-radius: 5px;
+    padding-left: 20px;
+    font-size: 17px;
+    color: black;
+    background-color: rgba(201, 206, 211, 0.745);
+    outline: none;
+    box-sizing: border-box;
+   }
+
+    .search form button {
+    width: 200px;
+    height: 42px;
+    margin-left: 10px;
+    border: 0 black solid;
+    border-radius: 5px;
+    background-color: rgba(49, 146, 157, 0.754);
+    color: white;
+    padding: 0;
+    box-sizing: border-box; 
+    font-size: 21px; 
+    cursor: pointer;
+   }
+
+   form {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    gap: 10px;
+   }
+
+   .book-list {
+    width: 1200px;
+    margin: 10px auto;
+    padding: 10px;  
+    overflow: hidden;
+    
+   }
+
+
+   .book-list .book {
+    width: 31.3%;
+    height: 440px;
+    margin: 10px;
+    border: 2px solid rgba(158, 170, 181, 0.149);
+    background-color: rgba(158, 170, 181, 0.149);
+    border-radius: 7px;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    padding: 5px 10px;
+    z-index: 2;
+
+   }
+
+   .book-list .book .book-content {
+    position: absolute;
+    top: 230px;
+    height: 200px;
+    width: 95%;
+    padding: 5px 20px 0 20px;
+    z-index: 2;
+    
+    
+    
+    
+   }
+
+   .book-list .book .book-content p, h3 {
+    margin: 2px 5px 1px 5px;
+    padding: 4px;
+    height: 30px;
+    width: 300px;
+   }
+
+
+   .book-list .book .book-content button {
+    height: 40px;
+    width: 125px;
+    float: left;
+    display: flex;
+    justify-content: space-around;
+    margin: 4px 7px 2px 10px;
+    color: black;
+    background-color: blue;
+    border-radius: 5px;
+    border: none;
+    padding: 0;
+    font-size: 17px;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+    
+   }
+   
+   #button-left {
+    background-color: rgba(52, 166, 237, 0.91);
+   }
+
+
+   #button-right {
+    background-color: rgba(2, 122, 243, 0.798);
+   }
+
+
+   img {
+    width: 180px;
+    height: 220px;
+    position: absolute;
+    transform: translateX(72px);
+    display: inline-block;
+    z-index: -1000;
+    
+   }
+
+   #book_content_title {
+    overflow: hidden;
+   }
+</style>
+
+{% endblock %}

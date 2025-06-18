@@ -1,0 +1,37 @@
+#Django Bookshop Project Dependencies
+
+#Core Django Framework
+Django==5.2.3
+
+#ASGI support for Django
+asgiref==3.8.1
+
+#Image processing library for ImageField support
+Pillow==11.2.1
+
+#SQL parsing utilities
+sqlparse==0.5.3
+
+#Additional recommended packages for production (optional)
+#Uncomment these if you plan to deploy to production
+
+#For PostgreSQL database support
+#psycopg2-binary==2.9.9
+
+#For environment variable management
+#python-decouple==3.8
+
+#For static file serving in production
+#whitenoise==6.6.0
+
+#For security and performance
+#django-cors-headers==4.3.1
+
+# For API development (if needed)
+# djangorestframework==3.14.0
+
+# For testing
+# pytest-django==4.8.0
+
+# For development tools
+# django-debug-toolbar==4.2.0

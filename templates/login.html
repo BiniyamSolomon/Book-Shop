@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+<h1>Login Here</h1>
+<form method="POST" action="{% url 'books:login_view' %}">
+    {% csrf_token %}
+
+    <div class="inside">
+    <label>Username</label><br>
+    <input type="text" name="username" required><br>
+
+    <label>Password</label><br>
+    <input type="password" name="password" required><br>
+
+    <button type="submit">Login</button>
+
+    </div>
+</form>
+</div>
+{% endblock %}
+
+{% block styling %}
+
+
+<style>
+.container {
+    width: 430px;
+    margin: 100px auto;
+    background-color: rgba(34, 100, 158, 0.133);
+    height: 430px;
+    border-radius: 25px;
+    padding: 25px;
+    position: static;    
+}
+
+
+.container h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+form {
+    position: absolute;
+    padding: 20px;
+    width: 390px;
+    margin: auto;
+    height: 335px;
+    background-color: rgba(34, 100, 158, 0.175);
+    border-radius: 25px;
+    
+}
+
+
+.inside {
+    height: 450px;
+    width: 330px;
+    margin: 40px auto;
+    padding: 0;
+}
+
+.inside input {
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 7px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: rgba(34, 100, 158, 0.009);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.522);
+    outline: none;  
+    border-radius: 3px; 
+}
+
+.inside label {
+    color: rgba(18, 18, 18, 0.947);
+    font-size: 1.2em;
+}
+
+
+.inside button {
+    width: 250px;
+    height: 40px;
+    background-color: rgba(34, 100, 158, 0.418);
+    margin: 0 auto;
+    color: white;
+    position: absolute;
+    overflow: hidden;
+    font-size: 20px;
+    border-radius: 3px;
+    left: 80px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+</style>
+
+
+{% endblock %}

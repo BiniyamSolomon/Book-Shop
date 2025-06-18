@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="main">
+
+    <div class="inside">
+        <img src="{{book.image.url}}">
+        <div class="content">
+
+            <h1>{{book.title}}</h1>
+            <p id="author">Author: {{book.author}}</p>
+            <p id="price">${{book.price}}</p>
+            <p id="stock_status">{{book.stock_status}}</p>
+            <p id="description">{{book.description}}</p>
+
+            {% if user.is_authenticated %}
+            <a id="cart" href="{% url 'books:add_to_cart' book.id %}">Add to Cart</a>
+            {% else %}
+            <p id="login">Please <a href="{% url 'books:login_view'%}">Login</a> to Buy</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block styling %}
+<style>
+    .main {
+        width: 1300px;
+        margin: -10px auto 0 auto;
+        height: 800px;
+        background-color: rgba(158, 170, 181, 0.149); 
+        position: relative;             
+    }
+
+    .inside {
+        width: 1200px;
+        margin: 15px auto 0 auto;
+        height: 700px;
+        background-color: rgba(49, 97, 142, 0.21);
+        border-radius: 9px;
+        border:2px solid rgba(158, 170, 181, 0.897);     
+    }
+
+  
+    img {
+        width: 450px;
+        margin: 10px;
+        height: 600px;
+        border-radius: 9px;
+        border:2px solid rgba(158, 170, 181, 0.897); 
+        float: left;
+    }
+
+    .content {
+        width: 700px;
+        margin: 10px 0 10px 10px;
+        height: 600px;
+        border-radius: 9px;
+         
+        float: right;
+        padding: 10px 5px;     
+    }
+
+    .content h1 {
+        width: 650px;
+        margin: 20px 5px; 
+        margin-left: 30px;  
+        height: 50px;       
+    }
+
+
+
+    #author {
+
+        width: 500px;
+        margin: 40px 5px;  
+        padding: 5px 5px; 
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    #price {
+        width: 500px;
+        margin: 40px 5px;  
+        padding: 5px 5px; 
+        height: 50px;
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+
+    }
+
+    #stock_status {
+        width: 500px;
+        margin: 40px 5px;  
+        padding: 5px 5px; 
+        height: 50px;
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+
+    }
+
+    #description {
+        width: 650px;
+        margin: 50px 5px;  
+        padding: 5px 5px; 
+        height: 120px;
+        overflow: hidden;
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+        border: 1px solid rgba(21, 88, 127, 0.445);
+        border-radius: 5px;
+    }
+
+    #cart {
+        width: 500px;
+        margin: 40px 5px;  
+        padding: 5px 5px; 
+        height: 50px;
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        padding-left: 35%;
+    }
+
+    #login {
+        width: 500px;
+        margin: 40px 5px;  
+        padding: 5px 5px; 
+        height: 50px;
+        margin-left: 30px; 
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    
+    
+</style>
+{% endblock %}

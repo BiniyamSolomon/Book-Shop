@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+<h1>Shipping Information</h1>
+<form method="POST" action="{% url 'books:checkout' %}">
+    {% csrf_token %}
+    <div class="inside">
+            <label>First Name</label>
+            <input type="text" name="firstname" required><br>
+
+            <label>Last Name</label>
+            <input type="text" name="lastname" required><br>
+
+            <label>Email</label>
+            <input type="email" name="email" required><br>
+
+            <label>Phone Number</label>
+            <input type="tel" name="phone" required><br>
+
+            <label>Shipping Address</label>
+            <textarea name="address" cols="45" rows="2" required></textarea>            
+            <button type="submit">Submit</button>
+    </div>
+</form>
+</div>
+</div>
+{% endblock %}
+
+
+
+{% block styling %}
+
+<style>
+
+
+.container {
+    width: 500px;
+    margin: 40px auto;
+    background-color: rgba(34, 100, 158, 0.133);
+    height: 700px;
+    border-radius: 25px;
+    padding: 25px;
+    position: static;    
+}
+
+
+.container h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+form {
+    position: absolute;
+    padding: 20px;
+    width: 460px;
+    margin: auto;
+    height: 590px;
+    background-color: rgba(34, 100, 158, 0.175);
+    border-radius: 25px;
+    
+}
+
+
+
+
+.inside input {
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 7px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: rgba(34, 100, 158, 0.009);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.522);
+    outline: none;  
+    border-radius: 3px; 
+    font-size: 17px;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    
+}
+
+.inside input:hover {
+    border: 3px solid rgba(255, 255, 255, 0.468);
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 3px; 
+
+}
+
+.inside label {
+    color: rgba(18, 18, 18, 0.947);
+    font-size: 1.2em;
+}
+
+
+.inside button {
+    width: 340px;
+    height: 40px;
+    background-color: rgba(34, 100, 158, 0.418);
+    margin: 110px auto 0 auto;
+    color: white;
+    position: absolute;
+    overflow: hidden;
+    font-size: 20px;
+    border-radius: 3px;
+    left: 60px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+textarea {
+    margin-top: 10px;
+    outline: none;
+    border-radius: 5px;
+    background-color: rgba(245, 246, 248, 0);
+    padding: 20px;
+    font-weight: bold;
+    
+}
+
+
+</style>
+
+{% endblock %}
