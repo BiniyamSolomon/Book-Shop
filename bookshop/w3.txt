@@ -917,6 +917,38 @@ print(all([a,b,c]))  #this one will be false, b/c variable c is empty
 
 
 
+
+
+                    DJANGO RELATIONSHIP USING DOUBLE UNDERSCORES
++ In Django, you can use double underscores (`__`) to traverse relationships between models. This allows you to filter or access related fields in queries.
++ for example if we have three models like orderItem, order and user, we can do like 
+orderitem = OrderItem.objects.filter(order__user__username='john_doe')
++ In this example, we are filtering `OrderItem` objects where the related `Order` object's `User` has a username of 'john_doe'. The double underscores allow us to traverse the relationship from `OrderItem` to `Order` and then to `User`.
+
+
+
+                            REVERSE RELATION IN DJANGO
++ In Django, you can use reverse relationships to access related objects from the other side of a foreign key or many-to-many relationship. This allows you to navigate relationships in both directions.
++ For example, if you have a `Book` model with a foreign key to an `Author` model, you can access all books written by a specific author using the reverse relationship.
+```python
+from django.db import models
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+```
++ In this example, the `Book` model has a foreign key to the `Author` model, and we have specified a `related_name` of 'books'. This allows us to access all books written by a specific author using the reverse relationship.
+```python
+# Accessing all books written by a specific author
+author = Author.objects.get(name='John Doe')
+books_by_author = author.books.all()
+``` 
+
+and when we do query using reverser relation it is like ```python
+author = Author.objects.get(name='John Doe')
+books_by_author = author.book_set.all()
+``` so the syntax is 
 ---------------------------------------------------------------------------------------------------------------------
             CSS
 

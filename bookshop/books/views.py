@@ -194,10 +194,6 @@ def checkout(request):
 
 
 
-def orders(request):
-    return render(request, 'orders.html')
-
-
 
 def checkout(request):
 
@@ -257,3 +253,36 @@ def checkout(request):
         return render(request, 'success.html')
 
     return render(request, 'checkout.html')
+
+
+
+def orders(request):
+    from django.db.models import Sum
+    
+#Get all orders for the current user
+    orders = Order.objects.filter(user=request.user)
+    
+#Add subtotal calculation to each order item
+    for order in orders:
+        for item in order.orderitem_set.all():
+            item.subtotal = item.quantity * item.price
+    
+#Calculate total books ordered by this user across all orders
+    total_books = OrderItem.objects.filter(order__user=request.user).aggregate(
+        total=Sum('quantity')
+    )['total'] or 0
+    
+#Calculate total amount spent across all orders
+    total_amount = orders.aggregate(
+        total=Sum('total_amount')
+    )['total'] or 0
+    
+    return render(request, 'orders.html', {
+        'orders': orders, 
+        'book_count': total_books,
+        'book_total_amount': total_amount
+    })
+
+
+def profile(request):
+    return render(request, 'profile.html')
