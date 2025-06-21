@@ -1,0 +1,779 @@
+1. register the model in the admin.py  
+2. add books
+3. configure urls.py
+4. adjust views.py to handle rendering the book and its details
+5. then adjust conditions in view and html page like if the user is
+                   - authenticated
+                   - stock is available and how Many
+                   - 
+
+
+        Tomorrow
+
+1. finish cart and the view related with money and payment 
+2. and checkout page, payment logic of backend and url
+3. do orders page, url and backend logic
+4. do profile do page
+5. about page do page
+
+
+
+
+
+pip install virtualenvwrapper-win:- installs a wrapper for virtual environment
+
+    {
+        what is virtualenvwrapper?
+            is a set of tools, that has all venv inside centralized and used
+            to create, delete ans switch between venv.
+
+        pip install virtualenvwrapper
+
+        vim ~/.zshrc , and add =>  {
+                        export WORKON_HOME=$HOME/.virtualenvs
+                        export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+                        source $(which virtualenvwrapper.sh)
+        }
+        in the vim and save it.
+
+COMMAND LINES TO USE VIRTUALENVWRAPPER
+
+    mkvirtualenv name
+
+    workon name
+
+    deactivate
+
+    lsvirtualenv
+
+    rmvirtualenv
+
+    showvirtualenv name   :- shows the path of the virtual env.
+
+    workon     :- list all venv 
+
+    vim ~/.zshrc   :- to go to the editor
+
+    source ~/.zshrc   :- after editing the editor, to activate what is inside the editorc 
+
+
+
+
+    }
+
+python3 -m venv test :- create a virtual environment called test
+
+source test/bin/activate :- activates the environment
+
+pip install django :- installing django inside the environment
+
+mkdir  projects:   a new folder for projects is created in the virtual environment
+
+cd to projects folder
+
+django-admin startproject telusko :- ceating a project called telusko
+
+cd to telusko project
+
+python3 manage.py runserver :- to run the server
+
+Note:- when changing a terminal or using a new termial, start the virtual env again by going back
+
+python3 manage.py startapp calc :- starts a django app
+
+
+create urls python file inside the new app and then 
+            {
+
+                from django.urls import path
+                from . import views
+
+            //this is mapping.
+                urlpatterns = [
+                 path('', views.home, name='home')
+                ]
+            }
+
+
+Go to views file in calc, and create a function home, which will be mapped to the urls calc
+            
+            {
+            from django.shortcuts import render
+            from django.http import HttpResponse
+
+            def home(response):
+                return HttpResponse("Hello world")
+            }
+
+
+Go to url of main project, and add the url/path of the app.
+            {
+            from django.contrib import admin
+            from django.urls import path, include
+
+            urlpatterns = [
+                path('admin/', admin.site.urls),
+                path('', include('calc.urls')) //the new one is this.
+            ]
+            }
+
+
+
+Now the hello world is successfully renderd in the broweser.
+
+
+Template :- is html page or any page that has html and other codes.
+
+create a folder outside the app. templates => home.html and another folder static => css => styles.css
+
+Note: go to setting, edit and add path so the html file can be rendered properly.
+      and add " import os " on the top of the settings file.
+        {
+
+TEMPLATES = [
+    {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.join(BASE_DIR, 'templates')], //here is the added one.
+            'APP_DIRS': True,
+        }
+
+
+            STATIC_URL = 'static/'
+
+            STATICFILES_DIRS = [         // these two lines are new
+                BASE_DIR / "static",
+            ]
+
+
+
+Go to the view file of the app and edit it to 
+    //change the input parameter to request and also edit the return and inside
+
+        {
+            from django.shortcuts import render
+            from django.http import HttpResponse
+
+            def home(request):
+                return render(request, 'home.html')
+
+        }
+
+
+
+Finally go to the home home.html page and include css file, on the top
+   {
+        {load staticc}   //out side the html or doctype 
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">   //this one normal under the title tag.
+   }
+
+
+
+
+
+EXTEND
+    html page can be exended using
+            {% block content%}
+            {%end block%}
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. create urls.py in the app
+edit the urls like 
+                    {
+
+                    from django.urls import path
+                    from . import views
+
+                    urlpatterns = [
+                        path('',views.home, name='home'),
+                    ]
+                    }
+
+
+
+
+2. crate a function inside the views, if normal text, then use httpresponse,
+    if html file, use render and request together.
+
+                    {
+
+                    from django.shortcuts import render
+                    from django.http import HttpResponse
+
+                    def home(request):
+                        return HttpResponse("home")
+
+                    }
+
+        OR
+
+                    {
+                    from django.shortcuts import render
+
+
+                    def home(request):
+                        return render(request, "home.html")
+                    }
+
+
+
+
+3. Go to the serring of the main project and do like 
+                {
+                    urlpatterns = [
+                    path('admin/', admin.site.urls),
+                    path('', include('calc.urls'))
+                ]
+                }
+
+
+
+
+REDIRECTING TO ANOTHER PAGE AND PASSING A RESULT FROM OPERATION
+1   create an extra html page
+2   add the path in the app's url
+3   define the function inside the views
+4   use request as object and insert it like
+            {
+                from django.shortcuts import render
+
+
+                def home(request):
+                    return render(request, "home.html")
+
+                def add(request):
+                    val1 = request.GET['one']
+                    val2 = request.GET['two']
+                    final = val1 + val2
+                    return render(request, "registe.html", {'result' : final})
+
+            //final is value while result is an object
+            }
+
+
+
+
+GET AND POST
+
+    use {% csrf_token%}  inside the form on the top, also make the method of form "post"
+    and use post method while accessing parameters inside the views file
+
+
+
+
+MVT AND DTL (model, view, template  and django template language)
+
+
+                                        <=> model <=> data in the data base
+user <=> django framework <=> url => view
+                                        <=> template
+                    
+model for data, view for logic and template for layout
+
+
+
+
+STYLING
+
+    in the setting of the main project, create a static folder, and also run " python3 manage.py collectstatic "
+        {
+                STATIC_URL = 'static/'
+
+                STATICFILES_DIRS = [
+                    BASE_DIR / 'static'
+                ]
+
+                STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+        }
+
+    go to the html page and add {% load static%}
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> in the html page
+
+
+
+
+
+DYNAMIC WEBSITE USING OBJECT.
+1   go to models file of the app
+2   create an class  like
+         {
+            from django.db import models
+
+            class info:
+                name : str
+                age : int
+                country : str
+            # Create your models here.
+        }
+3   go to the view of the app
+4   import the class to the views file
+5   create each object from the class
+6   pass the object as dictionary in the render
+7   go to the index file and insert the object name with info eg,  ob1.name, ob.country.
+
+            {
+                from django.shortcuts import render
+                from .models import info
+
+
+                def home(request):
+                    #this is miriam
+                    ob1 = info()
+                    ob1.name = 'miriam'
+                    ob1.age = 21
+                    ob1.country = 'italy'
+
+                #this is gangster
+                    ob2 = info()
+                    ob2.name = 'gangster'
+                    ob2.age = 88
+                    ob2.country = 'malta lovely'
+
+                    return render(request, "home.html", {'ob1': ob1, 'ob2':ob2})
+            }
+8   finally you can control the values from the view page.
+9   note:- the objects can be passed as a predefined list.
+
+
+Note: we can not use a range directly inside html page, insetead we have to define => num range(5), pass it as object and use it.
+
+
+
+USING FOR LOOP AS A SHORT CUT.
+    instead of creating multiple objects manually in the html page, just pass list of object and then use for loop in the html file.
+
+    like {
+
+        //this is the view file
+
+                    def home(request):
+
+                        num = range(5)
+                        #this is miriam
+                        ob1 = info()
+                        ob1.name = 'miriam'
+                        ob1.age = 21
+                        ob1.country = 'italy'
+                        ob1.image = 'destination_1.jpj'
+                        
+
+                    #this is gangster
+                        ob2 = info()
+                        ob2.name = 'gangster'
+                        ob2.age = 88
+                        ob2.country = 'malta lovely'
+                        ob2.image = 'destination_2.jpj'
+
+                        ob3 = info()
+                        ob3.name = 'tanto'
+                        ob3.age = 4
+                        ob3.country = 'castel'
+                        ob3.image = 'destination_3.jpj'
+                        
+                        dests = [ob1, ob2, ob3]
+
+                        return render(request, "home.html", {'dests':dests})
+
+
+
+            //this is the html page
+    //notice that how image is added, 
+
+                    {% for dest in dests%}
+                    <div class="falda">
+                        <h1>{{dest.name}}</h1>
+                        <img src="{% static 'images/'|add:dest.image %}">
+                        <h2>{{dest.age}}</h2>
+                        <p>{{dest.country}}</p>
+                    </div>
+                    {% endfor %}
+    }
+
+
+
+
+WE CAN USE IF STATEMENT AS WELL
+
+
+ORM
+    object relational mapping
+
+
+
+
+DATABASE
+    edit setting with 
+    {DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.postgresql',
+                    'NAME': 'telusko',
+                    'USER': 'postgres',
+                    'PASSWORD': '1234',
+                    'HOST' : 'localhost'
+                }
+            }
+            }
+
+download psycopg2 adapter using =>  pip install psycopg2
+
+create a model inside the apps model page like 
+            {
+
+                    class destination(models.model):
+                    name = models.CharField(max_length=1000)
+                    img = models.ImageField(upload_to='pics')
+                    desc = models.TextField()
+                    price = models.IntegerField
+
+            }
+
+Go to main setting, append calc.apps.CalcConfig in the Installed apps list like 
+            {
+
+                INSTALLED_APPS = [
+                    'calc.apps.CalcConfig',
+                    'django.contrib.admin',
+                    'django.contrib.auth',
+                    'django.contrib.contenttypes',
+                    'django.contrib.sessions',
+                    'django.contrib.messages',
+                    'django.contrib.staticfiles',
+                ]
+            }
+
+
+pip install pillow :- a library to handle image upload.
+
+python manage.py makemigrations
+
+open migration file and check what will be migrate.
+
+python3 manage.py sqlmigrate calc 0001  :- to convert and see the query in sql.
+
+python3 manage.py migrate  :- final query to migrate the model in to the database, and then check the database.
+
+
+
+ADMIN PANEL
+
+python3 manage.py help  :- gives us info about commands
+
+python3 manage.py createsuperuser  :- and fill infos
+
+
+
+MAKING ADMIN TO HAVE ACCESS TO THE MODELS.
+
+go to admin.py file inside the calc app, and register the model like 
+            {
+                from django.contrib import admin
+                from .models import destination   #import it first
+
+                admin.site.register(destination)  #register to the admin panel
+            }
+
+go to admin panel and check it.
+
+go to the setting, append inorder to able to access the media, like 
+            {
+                    STATIC_URL = 'static/'
+
+                    STATICFILES_DIRS = [
+                        BASE_DIR / 'static'
+                    ]
+
+                    STATIC_ROOT = BASE_DIR / 'asset'
+
+                    MEDIA_URL = 'media/'     #these two are what is added for the media
+
+                    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+            }
+
+go to the url of the main project, append a url like :
+
+            {
+
+                urlpatterns = [
+                    path('admin/', admin.site.urls),
+                    path('', include('calc.urls')),
+                ]
+
+        #this the bottom is the added one.
+                urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+            }
+
+
+
+
+    
+ <img src="{{ dest.img.url }}">  <!-- ✅ Correct way to reference an ImageField -->
+
+
+
+
+                            REGISTRATION
+
+create url file and use 
+            {
+
+                from django.urls import path
+                from . import views
+
+                urlpatterns = [
+                    path('register/',views.register, name='register'),
+                    
+                ]
+
+            }
+
+go to main project urls, and 
+                {
+                    urlpatterns = [
+                    path('admin/', admin.site.urls),
+                    path('', include('calc.urls')),
+                    path('accounts/', include('accounts.urls')),
+
+                ]
+                }
+
+
+add this so django-authentication automatically handles the route
+            LOGIN_REDIRECT_URL = '/'  # Redirect to home page after login
+            fLOGOUT_REDIRECT_URL = '/'  # Redirect to home after logout
+
+
+go to views file and define a function like 
+                {
+                from django.shortcuts import render
+
+                def register(request):
+                    return render(request, 'register.html')
+
+                }
+
+
+
+edit the html page to go to 
+
+
+
+USER REGISTRATION.
+
+prepare the the home page with the url like =>  accounts/register 
+
+prepare the register page form with => register and post 
+
+go to view of the app, import auth and user like 
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+
+What is models and Model in models.py file?
+
+    models is a module/package in django.db that has important functions and classes a data base model(table)
+
+    Model  is a class inside models, serve as a base model for all the models
+
+    so when we define a class, we are inheriting a class from a models.Model
+
+
+
+    This inheritance gives Member access to all the built-in Django ORM features, such as:
+
+    Creating database tables
+
+    Performing queries (.objects.all(), .filter(), etc.)
+
+    Automatic ID field creation
+
+    Data validation and migrations
+
+
+
+    When we created the Django project, we got an empty SQLite database.
+
+    It was created in the my_tennis_club root folder, and has the filename db.sqlite3.
+
+    By default, all Models created in the Django project will be created as tables in this database.
+
+
+
+
+Note: when making migration, we migrate the app, not the model created, even when we call use the app name like
+    from appname.models import tablename or the class we define in the models.py file.
+
+
+
+
+python interactive model
+
+python3 manage.py shell
+
+from members.models import Members  => from appname.models import tablename
+
+appname = tablename(firstname = 'lala', lastname = 'lulu')
+
+appname.save()
+
+tablename.objects.all()
+
+tablename.objects.all().values()
+
+for multiple insert in django we use a built in function called bulk_create()
+
+
+            from myapp.models import Book
+
+            # Creating a list of Book objects
+            books = [
+                Book(title="Book 1", author="Author 1", published_date="2022-01-01"),
+                Book(title="Book 2", author="Author 2", published_date="2022-02-01"),
+                Book(title="Book 3", author="Author 3", published_date="2022-03-01"),
+            ]
+
+            # Using bulk_create to insert all books at once
+            Book.objects.bulk_create(books)
+
+
+TO UPDATE AND DELETE RECORD
+
+x = tablename.objects.all()[2]
+
+x.firstname     => to check 
+
+x.firstname = 'new name'
+
+x.save()
+
+TO DELETE
+
+x.delete()
+
+
+
+
+        DIFFEENCE BETWEEN BOOKS.OBJECTS.ALL() AND BOOKS.OBJECTS.VALUES()?
+         
++ the first one returns the object so then we access like books.title.
++ the second one returns a dictionalry, like {'title': 'Book 1', 'author': 'Author 1', 'published_date': '2022-01-01'}
++ so we access it after the quesry values is stored in variable 
+    example book = Books.objects.values()
+    then we can access like book['title'] or book['author'].
+
+
+
+Table Name	                                 Purpose
+auth_user	                Stores user accounts (username, email, password, etc.).
+auth_group	                Stores user groups (used for assigning permissions).
+auth_permission	            Stores permissions assigned to users and groups.
+django_admin_log	        Stores admin panel actions (who did what).
+django_content_type	        Helps with permissions by tracking all installed models.
+django_migrations	        Tracks applied migrations (prevents duplicate migrations).
+django_session	            Stores user session data (for logged-in users).
+django_site	                Used for multi-site management in Django.
+
+
+
+
+Note:- django has a default User model which is normally used as an account,
+    it has all the fields a client needs to have.
+    from django.contrib.auth.models import User  -> to import the model/table.
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+
+??? HOW TO SEE ALL AVAILABLE MODELS/TABLES
+
+python3 manage.py inspect db 
+or
+from django.apps import apps
+print(apps.get_models())
+
+
+
+??? HOW TO EXTRACT INFO FROM A SPECIFIC MODEL?
+                    try:
+                    user_info = Info.objects.get(id=1)  # Get user with id=1
+                    email = user_info.email
+                    print(email)
+                except Info.DoesNotExist:
+                    print("User not found")
+                except Info.MultipleObjectsReturned:
+                    print("Multiple users found, please refine your query")
+
+    so we can use get method like =>    x = Info.objects.get(id=1) then => x.name or x.email.
+
+
+
+
+FOR LOGIN, DJANGO HAS TWO functions
+            user = auth.authenticate(username=username, passowrd=password)
+
+            if user is not None:
+                auth.login(request, user)
+                return redirect('/')
+            else:
+                return render(request, 'home.html', {'error': 'invalid credential'})
+            
+
+
+------------------------------------------------------------------------------------------------
+
+full registration page
+
+
+------------------------------------------------------------------------------------------------
+
+
+
+                                    DJANGO FROM
+                                
+    django has a default form, django allow us to create and validate the form automatically
+
+    from django import forms => forms is a package
+    class InforForm(forms.ModelForm):    => ModelForm is a class which will be inherited.
+        class Meta:
+            model = Info:  => Meta is a subclass which is used to configure metadata, define how a form behave, 
+            fields = ['', '', ''] => list the fields which are defined in the model
+
+        NOTE: date = models.DateField(auto_add_now = true) => makes the date to be added automatically
+
+
+STEPS:
+ 1. first create a model called Info and migrate it.
+ 2. create forms.py file and, create a form using the default django forms like
+                

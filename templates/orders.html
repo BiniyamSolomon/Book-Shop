@@ -6,6 +6,16 @@
     <title>Document</title>
 </head>
 <body>
-    orders
+    <div class="main">
+        <div class="order-list">
+
+            {% for order in orders %}
+                <img src="{{order.book.image.url}}">
+                <p>{{order.status}}</p>
+                <p>{{order.created_at}}</p>
+                <p>{{order.total_amount}}</p>
+                <p>{{}}</p>
+        </div>
+    </div>
 </body>
 </html>

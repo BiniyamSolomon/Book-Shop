@@ -1,0 +1,928 @@
+from django.db import models
+
+class Member(models.Model):
+    firstname = models.CharField(max_length = 255)
+    lastname = models.CharField(max_length = 255)
+
++ models is a module in django that provides the ORM (Object-Relational Mapping) functionality.
+ and Model is a base class for all models in Django.
+   It provides a way to define the structure of your data and interact with the database using Python code.
+
+
++ after migrating the model, we can check data either using db or python shell
+           - python manage.py shell 
+           from members.models import Member 
+           Member.objects.all() # This will return all Member objects in the database.
+
+           + Adding records to a database from the shell
+            member = Members(firstname='John', lastname='Doe')
+            member.save()  # This will save the member to the database.
+
+           + Member.objects.all().values() # This will return a list of dictionaries containing the values of all Member objects.
+           +member = Member.objects.get(id = 1) # This will return the Member object with id 1.
+           Member.objects.filter(firstname = 'falda')
+
+           + member = Member.objects.get(id = 1)
+           member.delete()  # This will delete the member with id 1 from the database.
+
+
+
+           +updating records looks like
+           member = Member
+
+
+
++ adding data from the database -> view -> template 
+
+                        {% extends 'base.html' %}
+                {% block content %}
+
+                <div class="main">
+                    hello this is home page before login and after login
+                </div>
+
+                <ul>
+                    {% for x in members %}
+                    <li>{{x.firstname}} {{x.lastname}}</li>
+                    {% endfor%}
+                </ul>
+
+                {% endblock %}
+
+
+
+
+                from django.shortcuts import render
+                from django.http import HttpResponse
+                from .models import Member
+
+                def members(request):
+                    all_members = Member.objects.all()
+                    return render(request, 'home.html', {'members' : all_members} )
+
+
+
+
+
+
+                                 REQUEST IN DJANGO
+
+                            request = {
+                            "method": "GET",
+                            "GET": {
+                                "name": "bini",
+                                "age": "21",
+                                "sort": "newest"
+                            },
+                            "POST": {},
+                            "FILES": {},
+                            "user": {
+                                "is_authenticated": True,
+                                "username": "bini"
+                            },
+                            "COOKIES": {
+                                "theme": "dark"
+                            },
+                            "session": {
+                                "visits": 5
+                            },
+                            "path": "/profile/",
+                            "headers": {
+                                "User-Agent": "Mozilla/5.0",
+                                "Accept-Language": "en-US"
+                            }
+                        }
+
+
+
+
+                    USING QUERY AND PATH parameter
+- example in html page we can use like <a href="details/{{x.id}}">something in here</a> tag
+   and then in view we can use like urlpatterns  = [
+                        path("", views.members, name="members"),
+                        path("details/<int:id>/", views.details, name = "details")
+                    ]
+
+and after in the view it will be like 
+
+                    def details(request, id):
+                    user = Member.objects.get(id = id)
+                    return render(request, 'details.html', {'user' : user})
+
+
+
+            GOING BACK TO THE PREVIOUS PAGE
+- example <a href= "{% url 'go_back' %}"><a/>
+- and when there is parameter with it, <a href="{{% url 'go_back' user.id %}}">go back<a/>
+- and then in the view we can use like 
+
+                      def go_back(request, id):
+                        user = Member.objects.get(id = id)
+                        return render(request, 'details.html', {'user' : user})
+
+- and the urls will be like 
+
+                      urlpatterns = [
+                        path("", views.members, name="members"),
+                        path("details/<int:id>/", views.details, name = "details"),
+                        path("go_back/", views.go_back, name = "go_back")
+                    ]
+
+
+
+                    USING REDIRECT IN DJANGO
+-when using redirect in django, we can use it like this in the view
+                 def go_back(request):
+                  return redirect('members')
+
+
+- and in the urls it will be like
+                 urlpatterns = [
+                    path("", views.members, name="members"),
+                    path("details/<int:id>/", views.details, name = "details"),
+                    path("go_back/", views.go_back, name = "go_back")
+                ]
+
+
+
+    - so in short this redirect checks the url and goes to the view that is associated with that url.
+      - so in this case it will go to the members view and show the members page.
+
+      -tip: in case when the redirected view function needs a paramater, we can pass it in the 
+         html page like this
+         <a href="{% url 'go_back' user.id %}">Go Back</a>
+         and in the view we can use it like this
+                    def go_back(request, id):
+                        return redirect('details', id=id)
+
+
+- and in the urls it will be like
+                    urlpatterns = [
+                        path("", views.members, name="members"),
+                        path("details/<int:id>/", views.details, name = "details"),
+                        path("go_back/<int:id>/", views.go_back, name = "go_back")
+                    ]
+
+- and this will redirect to the details view with the id of the user passed in the url.
+
+
+
+- NOTE: When using css for header and footer like position fixed, we need to make sure to use padding bottom and top to 
+     avoid the content being hidden behind the header and footer.
+
+
+- we can create admin superuser by using the command
+            python manage.py createsuperuser
+            and then we can login to the admin panel using the credentials we created.
+            and then we can register the Member model in the admin panel by creating a file called admin.py in the members app and adding the following code:
+            from django.contrib import admin
+            from .models import Member
+            admin.site.register(Member)
+
+    and then we can do list display from models.py using the following code:
+            from django.contrib import admin
+            from .models import Member
+
+            @admin.register(Member)
+            class MemberAdmin(admin.ModelAdmin):
+                list_display = ('id', 'firstname', 'lastname')
+                search_fields = ('firstname', 'lastname')
+                list_filter = ('firstname', 'lastname')
+                ordering = ('id',)
+                list_per_page = 10  # Number of records per page in the admin list view
+                def __str__(self):
+                    return f"{self.firstname} {self.lastname}"
+            # This will display the id, firstname and lastname in the admin panel.
+            # and we can also add search functionality by using the search_fields attribute.
+            # and we can also add filter functionality by using the list_filter attribute.
+            # and we can also add ordering functionality by using the ordering attribute.
+            # and we can also add pagination functionality by using the list_per_page attribute.
+            # and we can also add __str__ method to display the firstname and lastname in the admin panel. 
+            # and we can also add __str__ method to display the firstname and lastname in the admin panel. 
+
+        
+        and the second option is to add the Member model to the admin panel by using the following code in the admin.py file:
+            from django.contrib import admin
+            from .models import Member
+
+            class MemberAdmin(admin.ModelAdmin):
+                list_display = ('id', 'firstname', 'lastname')
+                search_fields = ('firstname', 'lastname')
+
+            admin.site.register(Member, MemberAdmin)
+            # This will display the id, firstname and lastname in the admin panel.
+            # and we can also add search functionality by using the search_fields attribute.
+            # and we can also add filter functionality by using the list_filter attribute.
+            # and we can also add ordering functionality by using the ordering attribute.
+            # and we can also add pagination functionality by using the list_per_page attribute.
+            # and we can also add __str__ method to display the firstname and lastname in the admin panel.
+            # and we can also add __str__ method to display the firstname and lastname in the admin panel.   
+
+
++ WHAT IS models and MODEL IN DJANGO?
+    models is a module in django that has classes like Model, CharField, IntegerField, etc.
+    Model is a base class for all models in Django.
+    so when we create a class inside models.py, we are using all extending the Model class
+    and also initiating the CharField and IntegerField classes to define the fields of the model.
+
+
+                django.db.models (module)
+                │
+                ├── Model (class)
+                │    └── YourModel (e.g. Book) inherits from Model
+                │         ├── firstname = CharField()
+                │         ├── age = IntegerField()
+                │         └── joined = DateField()
+                │
+                ├── Field (base class for fields)
+                │    ├── CharField (subclass of Field)
+                │    ├── IntegerField (subclass of Field)
+                │    ├── DateField (subclass of Field)
+                │    └── ... (other field types)
+
+
+
+
++ WHAT IS admin IN DJANGO?
+    admin is a module in django that has classes like ModelAdmin, Site, etc.
+    ModelAdmin is a base class for all admin models in Django.  
+    and site is a class that provides the admin interface for the models.
+    and when we use ModelAdmin, we are extending it and overriding its methods like list_display, search_fields, etc.
+                
+                
+                django.contrib.admin (module)
+                │
+                ├── ModelAdmin (class)
+                │    └── YourModelAdmin (e.g. BookAdmin) inherits from ModelAdmin
+                │         ├── list_display = ('id', 'title', 'author')
+                │         ├── search_fields = ('title', 'author__name')
+                │         └── list_filter = ('published_date',)
+                │
+                ├── Site (class)
+                │    └── admin_site = Site()  # Default admin site instance
+                    register(YourModel, YourModelAdmin)  # Registering model with admin
+                 
+
+
+                   
+
+                   TEMPLATE TAG IN DJANGO
+- Template tags are special syntax in Django templates that allow you to perform logic, control flow, and access data.
+- They are enclosed in `{% %}` and can be used to loop through data, conditionally display content, or include other templates.
+- Example of a template tag:
+  ```html
+  {% for member in members %}
+      <p>{{ member.firstname }} {{ member.lastname }}</p>
+  {% endfor %}
+  ```
+- In this example, `{% for member in members %}` is a template tag that loops through the `members` list and displays each member's first and last name.
+- Template tags can also be used to include other templates, set variables, or perform conditional logic.
+- Example of a conditional template tag:
+  ```html
+  {% if user.is_authenticated %}
+      <p>Welcome, {{ user.username }}!</p>
+  {% else %}
+      <p>Please log in.</p>
+  {% endif %}
+  ```
+- In this example, `{% if user.is_authenticated %}` checks if the user is authenticated and displays a welcome message if true, otherwise prompts the user to log in.
+- Template tags can also be used to include other templates, set variables, or perform conditional logic.
+- Example of including another template:
+  ```html
+  {% include 'header.html' %}
+  ```
+- In this example, `{% include 'header.html' %}` includes the content of the `header.html` template in the current template.
+- Template tags can also be used to set variables, perform calculations, or manipulate data.
+- Example of setting a variable:
+  ```html
+  {% with total=members|length %}
+      <p>Total members: {{ total }}</p>
+  {% endwith %}
+  ```
+- In this example, `{% with total=members|length %}` sets a variable `total` to the length of the `members` list, which can then be used within the block.
+- Template tags can also be used to filter data, format dates, or perform other operations on the data.
+- Example of filtering data:
+  ```html
+  {% for member in members|filter:"active" %}
+      <p>{{ member.firstname }} {{ member.lastname }}</p>
+  {% endfor %}
+  ```
+- In this example, `{% for member in members|filter:"active" %}` filters the `members` list to only include active members before looping through them.
+- Template tags can also be used to format dates, numbers, or other data types.
+- Example of formatting a date:
+  ```html
+  <p>Joined on: {{ member.joined|date:"F j, Y" }}</p>
+  ```
+- In this example, `{{ member.joined|date:"F j, Y" }}` formats the `joined` date of the member to a more readable format.
+- Template tags can also be used to create custom filters or tags by defining them in a separate Python file and loading them in the template.
+- Example of creating a custom filter:
+  ```python
+  from django import template
+
+  register = template.Library()
+
+  @register.filter
+  def uppercase(value):
+      return value.upper()
+  ```
+- In this example, a custom filter `uppercase` is defined that converts a string to uppercase. This filter can then be used in templates like this:
+  ```html
+  <p>{{ member.firstname|uppercase }}</p>
+  ```
+- In this example, `{{ member.firstname|uppercase }}` applies the custom `uppercase` filter to the `firstname` of the member, converting it to uppercase.
+
+- more examples a template tag with filter:
+  ```html
+  {% for member in members %}
+      <p>{{ member.firstname|title }} {{ member.lastname|title }}</p>
+  {% endfor %}
+  ```
+- In this example, `{{ member.firstname|title }}` and `{{ member.lastname|title }}` apply the `title` filter to the first and last names of each member, capitalizing the first letter of each word.
+- so the syntax for first a normal template tag and second with a filter tag is as follow 
+  ```html
+  {% tag_name argument %}
+  {{ variable|filter_name }}
+  ```
+- Template tags can also be used to create custom template tags that perform specific actions or logic.
+
+
+- we can also use empty tag in django template to check if a list is empty or not
+  ```html
+  {% if members %}
+      <ul>
+          {% for member in members %}
+              <li>{{ member.firstname }} {{ member.lastname }}</li>
+          {% endfor %}
+      </ul>
+  {% else %}
+      <p>No members found.</p>
+  {% endif %}
+  ```
+- In this example, `{% if members %}` checks if the `members` list is not empty, and if it is not, it loops through the members and displays their first and last names. If the list is empty, it displays a message indicating that no members were found.
+- now using empty tag in django template to check if a list is empty or not
+  ```html
+  {% for member in members %}
+      <li>{{ member.firstname }} {{ member.lastname }}</li>
+  {% empty %}
+      <p>No members found.</p>
+  {% endfor %}
+  ```
+- In this example, `{% empty %}` is used within the `for` loop to provide an alternative message if the `members` list is empty. If there are no members, it will display "No members found." instead of iterating through an empty list.
+- This is a more concise way to handle empty lists in Django templates, as it eliminates the need for an additional `if` statement.
+
+- we can also use styles in django tag templates, lets start from the simple example that has template tag and styles
+  ```html
+  <style>
+      .member-list {
+          list-style-type: none;
+          padding: 0;
+      }
+      .member-item {
+          margin: 10px 0;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+  </style>
+
+  <ul class="member-list">
+      {% for member in members %}
+          <li class="member-item">{{ member.firstname }} {{ member.lastname }}</li>
+      {% empty %}
+          <p>No members found.</p>
+      {% endfor %}
+  </ul>
+  ```
+- In this example, we define some CSS styles for the member list and member items. The `member-list` class removes the default list styling, and the `member-item` class adds some padding, margin, and border to each member item.
+- The template tag `{% for member in members %}` iterates through the `members` list, and if there are no members, it displays "No members found." using the `{% empty %}` tag.
+- We can also use inline styles in Django templates, but it's generally better to keep styles in a separate CSS file for maintainability. However, if you need to apply styles directly in the template, you can do so like this:
+  ```html
+  <ul>
+      {% for member in members %}
+          <li style="color: blue; font-weight: bold;">{{ member.firstname }} {{ member.lastname }}</li>
+      {% empty %}
+          <p style="color: red;">No members found.</p>
+      {% endfor %}
+  </ul>
+  ```
+- In this example, we apply inline styles to the member items and the "No members found." message. The member names will be displayed in blue and bold, while the message will be in red.
+- Using styles in Django templates allows you to control the appearance of your content directly within the template, but it's often better to use external CSS files for larger projects to keep your code organized and maintainable.
+- In summary, Django templates allow you to use template tags to control the flow of your HTML content, apply styles, and format data. You can use built-in template tags or create custom ones to suit your needs. The use of styles can enhance the visual presentation of your data, making it more user-friendly and visually appealing.
+- Template tags can also be used to create custom template tags that perform specific actions or logic.
+
+- we can also use a comment template tag in django template to add comments that will not be rendered in the final HTML output.
+  ```html
+  {% comment %}
+      This is a comment that will not be rendered in the final HTML output.
+  {% endcomment %}
+  ```
+- In this example, the `{% comment %}` and `{% endcomment %}` tags are used to enclose a comment that will not be displayed in the final rendered HTML. This is useful for adding notes or explanations within your template code without affecting the output.
+  
+
+
+- Member.objects.all() returns a QuerySet containing all Member objects in the database.
+- Member.objects.get(id=1) retrieves a single Member object with the specified id (in this case, id=1).
+- Member.objects.filter(firstname='falda') returns a QuerySet containing all Member objects with the specified firstname (in this case, 'falda').
+- member = Member.objects.get(id=1) retrieves the Member object with id=1 and assigns it to the variable `member`.
+- member.delete() deletes the Member object that was retrieved earlier (in this case, the member with id=1) from the database.
+- member = Member(firstname='John', lastname='Doe') creates a new Member object with the specified firstname and lastname.
+- Member.objects.all().values_list() returns a list of dictionaries containing the values of all Member objects in the database.
+- someone = Member.objects.filter(firstname='falda').values() returns a QuerySet containing dictionaries of Member objects that match the specified firstname (in this case, 'falda').
+- Member.objects.filter(firstname='falda').update(lastname='Smith') updates the lastname of all Member objects with the specified firstname (in this case, 'falda') to 'Smith'.
+- Member.objects.create(firstname='Jane', lastname='Doe') creates a new Member object with the specified firstname and lastname and saves it to the database.
+- Member.objects.filter(firstname='falda').delete() deletes all Member objects with the specified firstname (in this case, 'falda') from the database.
+- Member.objects.filter(firstname='falda').exists() checks if there are any Member objects with the specified firstname (in this case, 'falda') in the database and returns a boolean value (True or False).
+- Member.objects.filter(firstname='falda').count() returns the number of Member objects with the specified firstname (in this case, 'falda') in the database.
+
+- we can also use startwith and endswith in django query
+  ```python
+  Member.objects.filter(firstname__startswith='J')  # Returns all members whose firstname starts with 'J'
+  Member.objects.filter(lastname__endswith='Doe')   # Returns all members whose lastname ends with 'Doe'
+  ```
+- In these examples, `startswith` and `endswith` are used to filter Member objects based on the beginning or end of their firstname or lastname, respectively.
+- and using this start with is usefull when we have a search functionality in our application, where users can search for members by their first or last name.
+- For example, if you have a search bar in your application, you can use these filters to return members whose names match the search query:
+  ```python
+  search_query = request.GET.get('search', '')
+  members = Member.objects.filter(firstname__icontains=search_query)
+  ```
+- In this example, `icontains` is used to perform a case-insensitive search for members whose firstname contains the search query. This allows users to find members even if they don't know the exact spelling or case of their names.
+
+- now let me show you request in django using something like diagram like i used above to show you how the models and admin works
+```plaintext
+django.http.HttpRequest (class)
+│
+├── method (str)  # e.g., 'GET', 'POST'
+├── GET (dict)    # Query parameters from the URL
+├── POST (dict)   # Data submitted in a POST request
+├── FILES (dict)  # Uploaded files in a POST request
+├── user (User)   # Authenticated user object           
+
+├── COOKIES (dict)  # Cookies sent with the request
+├── session (Session)  # Session data for the request
+├── path (str)  # The full path of the request URL
+├── headers (dict)  # HTTP headers sent with the request
+├── body (bytes)  # The raw body of the request
+├── is_ajax() (method)  # Returns True if the request is an AJAX request
+├── is_secure() (method)  # Returns True if the request is secure (HTTPS)
+├── is_authenticated() (method)  # Returns True if the user is authenticated
+├── get_host() (method)  # Returns the host of the request
+├── get_full_path() (method)  # Returns the full path of the request URL
+├── get_raw_uri() (method)  # Returns the raw URI of the request
+├── get_signed_cookie() (method)  # Returns a signed cookie value
+├── get_cookie() (method)  # Returns a cookie value
+├── get_header() (method)  # Returns a specific header value    
+
+- now same way but in more detailed and with methods
+django.http.HttpRequest (class)
+│
+├── method (str)  # e.g., 'GET', 'POST'
+├── GET (dict)    # Query parameters from the URL
+├── POST (dict)   # Data submitted in a POST request
+├── FILES (dict)  # Uploaded files in a POST request
+├── user (User)   # Authenticated user object
+├── COOKIES (dict)  # Cookies sent with the request
+├── session (Session)  # Session data for the request
+├── path (str)  # The full path of the request URL
+├── headers (dict)  # HTTP headers sent with the request
+├── body (bytes)  # The raw body of the request
+├── is_ajax() (method)  # Returns True if the request is an AJAX request
+├── is_secure() (method)  # Returns True if the request is secure (HTTPS)
+├── is_authenticated() (method)  # Returns True if the user is authenticated
+├── get_host() (method)  # Returns the host of the request
+├── get_full_path() (method)  # Returns the full path of the request URL
+├── get_raw_uri() (method)  # Returns the raw URI of the request
+├── get_signed_cookie() (method)  # Returns a signed cookie value
+
+
+
+
+                       FORM IN DJANGO
+
+- now i will give you a concise tutorial on django forms the structure and how to use it in your project
+- Django forms are a way to handle user input in a structured manner. They allow you to create forms, validate user input, and render HTML forms easily.
+- Django provides a powerful form handling system that includes form validation, rendering, and processing user input.
+- Forms in Django are defined using Python classes that inherit from `django.forms.Form` or `django.forms.ModelForm`.
+- `Form` is used for creating custom forms, while `ModelForm` is used for creating forms based on Django models.
+- To create a form, you need to define a class that inherits from `forms.Form` or `forms.ModelForm` and define the fields you want in the form.
+- Here's a simple example of a Django form using `forms.Form`:
+  ```python
+  from django import forms
+
+  class ContactForm(forms.Form):
+      name = forms.CharField(max_length=100, label='Your Name')
+      email = forms.EmailField(label='Your Email')
+      message = forms.CharField(widget=forms.Textarea, label='Your Message')
+  ```
+- In this example, we define a `ContactForm` class with three fields: `name`, `email`, and `message`. Each field is defined using a specific field type (e.g., `CharField`, `EmailField`) and can have additional attributes like `max_length` and `label`.
+- To use this form in a Django view, you can import the form class and instantiate it in your view function:
+  ```python
+  from django.shortcuts import render
+  from .forms import ContactForm
+
+  def contact_view(request):
+      if request.method == 'POST':
+          form = ContactForm(request.POST)     # Create an instance of the form with the submitted data
+          if form.is_valid():
+              # Process the form data (e.g., send an email) 
+              return render(request, 'success.html')
+      else:
+          form = ContactForm() # Create a new instance of the form to display it
+
+      return render(request, 'contact.html', {'form': form})
+  ```
+- In this example, we check if the request method is `POST`, indicating that the form has been submitted. If it is, we create an instance of the `ContactForm` with the submitted data (`request.POST`). We then call `form.is_valid()` to validate the form data. If the form is valid, we can process the data (e.g., send an email) and render a success template. If the request method is not `POST`, we create a new instance of the form to display it in the template.
+- To render the form in a template, you can use the `{{ form }}` template variable:
+  ```html
+  <form method="post">
+      {% csrf_token %} # This is a security measure to protect against CSRF attacks (csrf_token is a template tag that generates a hidden input field with a CSRF token, and stands for Cross-Site Request Forgery)
+      {{ form.as_p }}  # Render the form fields as paragraphs
+      <button type="submit">Submit</button>
+  </form>
+  ```
+- In this example, we use the `{{ form.as_p }}` template tag to render the form fields as paragraphs. The `{% csrf_token %}` tag is included for security purposes to protect against Cross-Site Request Forgery (CSRF) attacks.
+- You can also customize the form rendering by accessing individual fields:
+  ```html
+  <form method="post">
+      {% csrf_token %}
+      <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+      {{ form.name }}
+      <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+      {{ form.email }}
+      <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+      {{ form.message }}
+      <button type="submit">Submit</button>
+  </form>
+  ```
+- In this example, we manually render each form field with its label and input element. This allows for more control over the HTML structure and styling of the form.
+- Django also provides built-in form validation, which checks if the submitted data meets the requirements defined in the form fields. If the form is not valid, you can access the errors using `form.errors` and display them in the template:
+  ```html
+  {% if form.errors %}
+      <ul>
+          {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                  <li>{{ field }}: {{ error }}</li>
+              {% endfor %}
+          {% endfor %}
+      </ul>
+  {% endif %}
+  ```
+- In this example, we check if the form has any errors and display them in an unordered list. Each error is associated with the corresponding field, making it easy for users to understand what went wrong.
+- You can also use `ModelForm` to create forms based on Django models. This allows you to automatically generate form fields based on the model's fields and handle model validation.
+  ```python
+  from django import forms
+  from .models import Member
+
+  class MemberForm(forms.ModelForm):
+      class Meta:
+          model = Member
+          fields = ['firstname', 'lastname']
+  ```
+- In this example, we define a `MemberForm` class that inherits from `forms.ModelForm`. The `Meta` class specifies the model (`Member`) and the fields to include in the form (`firstname` and `lastname`). Django will automatically generate the form fields based on the model's fields. 
+
+
+
+
+          TWO WAYS TO CREATE A FORM IN DJANGO
+- custom form using `forms.Form`:
+  ```python
+  from django import forms
+
+  class CustomForm(forms.Form):
+      name = forms.CharField(max_length=100, label='Your Name')
+      email = forms.EmailField(label='Your Email')
+      message = forms.CharField(widget=forms.Textarea, label='Your Message')
+  ```
+- model form using `forms.ModelForm`:
+  ```python
+  from django import forms
+  from .models import Member
+  class MemberForm(forms.ModelForm):
+      class Meta:
+          model = Member
+          fields = ['firstname', 'lastname']
+  ```
+
+
+- and also using built in form 
+
+                from django.shortcuts import render, redirect
+                from django.contrib.auth.forms import UserCreationForm
+
+                def register(request):
+                    if request.method == 'POST':
+                        form = UserCreationForm(request.POST)
+                        if form.is_valid():
+                            form.save()
+                            return redirect('login')  # or any other page after registration
+                    else:
+                        form = UserCreationForm()
+                    
+                    return render(request, 'register.html', {'form': form})
+
+
+
+    
+                from django.urls import path
+                from . import views
+
+                urlpatterns = [
+                    path('register/', views.register, name='register'),
+                ]
+
+
+
+
+                {% extends 'base.html' %}
+
+                {% block content %}
+                <h2>Register</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Register</button>
+                </form>
+                {% endblock %}
+
+
+
+                from django.contrib.auth import views as auth_views
+
+                urlpatterns = [
+                    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+                ]
+
+
+
+                            <h2>Login</h2>
+
+                {% if error %}
+                <p style="color: red;">{{ error }}</p>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <label>Username:</label><br>
+                    <input type="text" name="username" required><br>
+
+                    <label>Password:</label><br>
+                    <input type="password" name="password" required><br><br>
+
+                    <button type="submit">Login</button>
+                </form>
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------
+
+                FROM PRACTISE
+
+        -----------------------------------
+
++ When handling a user to login directly afte registration, we can use the following code in the view:
+          ```python
+          from django.contrib.auth import login
+          from django.shortcuts import redirect
+
+          def register(request):
+              if request.method == 'POST':
+                  form = UserCreationForm(request.POST)
+                  if form.is_valid():
+                      user = form.save()
+                      login(request, user)  # Automatically log in the user after registration
+                      return redirect('home')  # Redirect to home page or any other page
+              else:
+                  form = UserCreationForm()
+              
+              return render(request, 'register.html', {'form': form})
+          ```
+- In this example, after the user successfully registers, we call `login(request, user)` to log in the user immediately after registration. This way, the user will be redirected to the home page or any other page you specify without needing to log in again.
+- and the login view can be handled using Django's built-in authentication views:
+          ```python
+          from django.contrib.auth import views as auth_views
+
+          urlpatterns = [
+              path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+          ]
+          ```
+- In this example, we use Django's built-in `LoginView` to handle user login. The `template_name` parameter specifies the template to render for the login page.
+   and the login view looks like this in views.py 
+          ```python
+          from django.contrib.auth import views as auth_views
+
+          def login_view(request):
+              return auth_views.LoginView.as_view(template_name='login.html')(request)
+          ```
+- In this example, we define a `login_view` function that uses Django's built-in `LoginView` to handle user login. The `template_name` parameter specifies the template to render for the login page.
+          and the login template can be like this
+          ```html
+          {% extends 'base.html' %}
+
+          {% block content %}
+          <h2>Login</h2>
+
+          {% if form.errors %}
+              <p style="color: red;">{{ form.errors }}</p>
+          {% endif %}
+
+          <form method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Login</button>
+          </form>
+          {% endblock %}
+          ```
+- In this example, we extend a base template and display a login form. If there are any errors in the form submission, they will be displayed in red. The form is rendered using `{{ form.as_p }}`, which formats the form fields as paragraphs.
+- and the urls.py for the login view can be like this
+          ```python
+          from django.urls import path
+          from .views import login_view
+
+          urlpatterns = [
+              path('login/', login_view, name='login'),
+          ]
+          ```
+
+
+
+
+
+
+
+
+
+          LINKING MODELS
+
+
++ WHEN ONE TO MANY
+        class Parent(models.Model):
+            # Parent fields
+            name = models.CharField(max_length=100)
+
+        class Child(models.Model):
+            # Child fields
+            name = models.CharField(max_length=100)
+            parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+
+
+
++ WHEN ONE TO ONE
+        class User(models.Model):
+            username = models.CharField(max_length=100)
+
+        class Profile(models.Model):
+            user = models.OneToOneField(User, on_delete=models.CASCADE)
+            bio = models.TextField()
+
+
++ WHEN MANY TO MANY
+        class Student(models.Model):
+            name = models.CharField(max_length=100)
+
+        class Course(models.Model):
+            title = models.CharField(max_length=100)
+            students = models.ManyToManyField(Student)
+
+
+
+
+            IMAGE AND FILE 
+
++ When image or file is considered in django, urls.py and settings of project level have to be configured properly.
+        # settings.py
+        MEDIA_URL = '/media/'
+        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+        # urls.py
+        from django.conf import settings
+        from django.conf.urls.static import static
+
+        urlpatterns = [
+            # Your other URL patterns
+        ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
++ In the models.py, we can use ImageField or FileField to handle image or file uploads.
+
+
+
+
+                      MESSAGE IN DJANGO
++ we can use message along with redirect like this
+          from django.contrib import messages
+          from django.shortcuts import redirect
+
+          def my_view(request):
+              # Your view logic here
+              messages.success(request, 'Your message here')
+              return redirect('some-view-name')
+
++ and in the template, we can display the message like this
+          {% if messages %}
+              {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+              {% endfor %}
+          {% endif %}
+
+
+
+
+
+             TEMPLATE NOT FOUND ERROR 
+            
+ when this error happend, fix like 'DIRS': [BASE_DIR.parent / 'templates'],
+     in the settings.py file.
+
+
+
+
+
+
+     SETTING MINIMUM VALUE IN DJANG0
+
++ To set a minimum value for a field in Django, you can use the `validators` argument in the field definition.
+  For example, if you want to set a minimum value for an `IntegerField`, you can do it like this:
+    ```python
+    from django.core.validators import MinValueValidator
+
+    class MyModel(models.Model):
+        my_field = models.IntegerField(validators=[MinValueValidator(0)])
+    ``` 
+
+
+
+
+
+    WHAT ARE Q AND icontains IN DJANGO?
++ `Q` is a class in Django that allows you to create complex queries using logical operators like AND, OR, and NOT. It is used to build query expressions that can be combined to filter database records.
++ `icontains` is a field lookup in Django that performs a case-insensitive search for a substring within a string field. It is often used with `Q` objects to filter records based on partial matches.
++ Here's an example of how to use `Q` and `icontains` together:
+  ```python
+  from django.db.models import Q
+  from .models import Member
+
+  # Example: Find members whose firstname contains 'john' or lastname contains 'doe'
+  members = Member.objects.filter(
+      Q(firstname__icontains='john') | Q(lastname__icontains='doe')
+  )
+  ```
+- In this example, we use `Q` to create a query that filters `Member` objects where either the `firstname` contains 'john' (case-insensitive) or the `lastname` contains 'doe' (case-insensitive). The `icontains` lookup allows for flexible searching without worrying about case sensitivity.
++ `Q` objects can also be combined using the `&` operator for AND conditions or the `|` operator for OR conditions. This allows you to build complex queries with multiple conditions.
+  ```python
+  from django.db.models import Q
+  from .models import Member
+
+  # Example: Find members whose firstname contains 'john' and lastname contains 'doe'
+  members = Member.objects.filter(
+      Q(firstname__icontains='john') & Q(lastname__icontains='doe')
+  )
+  ```
+- In this example, we use `Q` to create a query that filters `Member` objects where both the `firstname` contains 'john' (case-insensitive) and the `lastname` contains 'doe' (case-insensitive). The `&` operator combines the two conditions with an AND logic.
++ `Q` objects can also be negated using the `~` operator to create NOT conditions. This allows you to exclude records that match certain criteria.
+  ```python
+  from django.db.models import Q
+  from .models import Member
+
+  # Example: Find members whose firstname does not contain 'john'
+  members = Member.objects.filter(~Q(firstname__icontains='john'))
+  ```
+- In this example, we use `~Q` to create a query that filters `Member` objects where the `firstname` does not contain 'john' (case-insensitive). The `~` operator negates the condition, effectively excluding records that match the specified criteria.
++ `Q` objects can also be used with other field lookups like `exact`, `iexact`, `contains`, `gt`, `lt`, etc., to create more complex queries based on your requirements.
+  ```python
+  from django.db.models import Q
+  from .models import Member
+
+  # Example: Find members whose firstname is exactly 'john' or age is greater than 30
+  members = Member.objects.filter(
+      Q(firstname__exact='john') | Q(age__gt=30)
+  )
+  ```
+- In this example, we use `Q` to create a query that filters `Member` objects where either the `firstname` is exactly 'john' or the `age` is greater than 30. The `exact` lookup checks for an exact match, while the `gt` lookup checks for values greater than a specified value.
+
+
+            PYTHON BUILT IN FUNCTION CALLED "all()"
++ The `all()` function in Python is a built-in function that returns `True` if all elements of an iterable (like a list, tuple, or set) are true (or if the iterable is empty). Otherwise, it returns `False`.
++ It is often used to check if all elements in a collection meet a certain condition.
++ Here's an example of how to use the `all()` function:
++ lets see a simple example of this 
+ a = "hello"
+ b = "world"
+ c = ""
+
+#then we can use the all() function to check if all variables are strings
+print(all([a,b]))    #this one will be true, b/c variable a and b are not empty
+print(all([a,b,c]))  #this one will be false, b/c variable c is empty
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+            CSS
+
+z-index is used to make boxes appear front or behind one another, and it works when position is set to relative, absolute, or fixed. The element with the higher z-index value will appear in front of the element with the lower z-index value.
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+

@@ -25,7 +25,11 @@
                 <h3 id="book_content_title">Title: {{book.title}}</h3>
                 <p>By: {{book.author}}</p>
                 <p>${{book.price}}</p>
-                <p>{{book.stock_status}}</p>
+                {% if book.stock <= 5 %}
+                <p id="status">{{book.stock_status}}</p>
+                {% else %}
+                <p >{{book.stock_status}}</p>
+                {% endif %}
                 <a href="{% url 'books:detail' book.id %}"><button id="button-left">View Details</button></a>
                 {% if user.is_authenticated %}
                 <a href="{% url 'books:add_to_cart' book.id %}"><button id="button-right" >Add to Cart</button></a>
@@ -217,6 +221,10 @@
 
    #book_content_title {
     overflow: hidden;
+   }
+
+   #status {
+    color: red;
    }
 </style>
 

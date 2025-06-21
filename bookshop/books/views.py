@@ -31,7 +31,7 @@ def home(request):
         elif book.stock == 0:
             book.stock_status = 'Out of Stock'
         elif book.stock == 1:
-            book.stock_status = 'Low Stock 1 left'
+            book.stock_status = 1  #'Low Stock 1 left'
         else:
             book.stock_status = 'In Stock'
 
@@ -254,6 +254,6 @@ def checkout(request):
         cart_items.delete()
 
         messages.success(request, 'Successfully placed')
-        return render(request, 'list.html')
+        return render(request, 'success.html')
 
     return render(request, 'checkout.html')

@@ -19,14 +19,14 @@
             <p id="stock_status">{{item.book.stock_status}}</p>
             <p id="description">{{item.book.description}}</p>
             
-            <!-- Quantity Update Form -->
+            
             <form method="post" action="{% url 'books:update_quantity' item.id %}" style="display: inline;">
                 {% csrf_token %}
                 <input type="number" name="quantity" value="{{item.quantity}}" min="1" max="{{item.book.stock}}" required>
                 <button type="submit" class="button_update">Update</button>
             </form>
             
-            <!-- Remove Button -->
+           
             <a href="{% url 'books:remove_from_cart' item.id %}">
                 <button type="button" class="button_remove">Remove</button>
             </a>
