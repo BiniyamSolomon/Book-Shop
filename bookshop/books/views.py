@@ -27,7 +27,7 @@ def home(request):
 #stock status is on fly attribute that won't be saved in database, but in memory.
     for book in books:
         if book.stock < 5:
-            book.stock_status = 'Out of Stock'
+            book.stock_status = F'{book.stock} Left'
         elif book.stock == 0:
             book.stock_status = 'Out of Stock'
         elif book.stock == 1:
@@ -37,6 +37,8 @@ def home(request):
 
     return render(request, 'list.html', {'books' : books, 'query_searched': query or ''})
 #here the query_searched string will be used in django template as a variable
+
+
 
 
 
@@ -71,6 +73,9 @@ def register(request):
 
  
 
+
+
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -85,6 +90,7 @@ def login_view(request):
             return render(request, 'login.html', {'message' : 'Login failed'})
         
     return render(request, 'login.html')
+
 
 def logout_view(request):
     logout(request)
@@ -189,8 +195,8 @@ def update_quantity(request, cart_item_id):
     
 
 
-def checkout(request):
-    return render(request, 'checkout.html')
+# def checkout(request):
+#     return render(request, 'checkout.html')
 
 
 
@@ -243,7 +249,8 @@ def checkout(request):
             
         #6
         for item in cart_items:
-            item.book.stock -= item.book.stock - item.quantity
+            #item.book.stock -= item.book.stock - item.quantity
+            item.book.stock = item.book.stock - item.quantity
             item.book.save()
 
         #7
