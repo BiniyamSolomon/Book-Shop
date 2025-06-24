@@ -22,7 +22,7 @@
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'books:cart'%}">Cart</a></li>
                     <li><a href="{% url 'books:orders'%}">Order</a></li>
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="{% url 'books:profile' %}">Profile</a></li>
                     <li id="name">{{user.username}}</li>
                     <li><a href="{% url 'books:logout_view' %}">Logout</a></li>
 

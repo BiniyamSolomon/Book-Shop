@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<div class="main">
 <div class="container">
 <h1> {% if message %}
 <h2>{{message}}</h2>
@@ -30,6 +31,7 @@
     </div>
 </form>
 </div>
+</div>
 {% endblock %}
 
 
@@ -49,6 +51,16 @@
     position: static;    
 }
 
+main {
+        width: 1300px;
+        margin: 0 auto 0 auto;
+        height: 1000px;
+        background-color: rgba(5, 61, 113, 0.187); 
+        position: fixed;
+        transform: translateX(70px);
+        
+              
+    }
 
 .container h1 {
     display: flex;
@@ -113,7 +125,7 @@ form {
 .inside button {
     width: 340px;
     height: 40px;
-    background-color: rgba(34, 100, 158, 0.418);
+    background-color: rgba(4, 52, 93, 0.532);
     margin: 0 auto;
     color: white;
     position: absolute;

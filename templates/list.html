@@ -25,11 +25,12 @@
                 <h3 id="book_content_title">Title: {{book.title}}</h3>
                 <p>By: {{book.author}}</p>
                 <p>${{book.price}}</p>
-                {% if book.stock <= 5 %}
-                <p id="status">{{book.stock_status}}</p>
+                {% if book.stock <= 5%}
+                <p class="stock_no">{{book.stock_status}}</p>
                 {% else %}
-                <p >{{book.stock_status}}</p>
+                <p class="stock_yes">{{book.stock_status}}</p>
                 {% endif %}
+                
                 <a href="{% url 'books:detail' book.id %}"><button id="button-left">View Details</button></a>
                 {% if user.is_authenticated %}
                 <a href="{% url 'books:add_to_cart' book.id %}"><button id="button-right" >Add to Cart</button></a>
@@ -41,22 +42,17 @@
         {% endfor %}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
 
 </div>
 
+<script>
+   
+   
+
+    
+    
+</script>
 
 {% endblock %}
 
@@ -223,8 +219,19 @@
     overflow: hidden;
    }
 
-   #status {
-    color: red;
+
+
+   .stock_no {
+    color: rgba(255, 0, 0, 0.948);
+    font-weight: bolder;
+    
+   }
+
+
+
+   .stock_yes {
+    color: green;
+    font-weight: bolder;
    }
 </style>
 

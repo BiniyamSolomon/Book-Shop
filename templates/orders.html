@@ -1,21 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
     <div class="main">
         <div class="order-list">
-
-            {% for order in orders %}
-                <img src="{{order.book.image.url}}">
-                <p>{{order.status}}</p>
-                <p>{{order.created_at}}</p>
-                <p>{{order.total_amount}}</p>
-                <p>{{}}</p>
+            <div class="info">
+                <p>Total Books Purchased: {{book_count}}</p>
+                <p>Total amount spend: ${{book_total_amount}}</p>
+            </div>
+            {% if orders %}
+                {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <h3>Order #{{order.id}}</h3>
+                        <p><strong>Status:</strong> {{order.status}}</p>
+                        <p><strong>Order Date:</strong> {{order.created_at|date:"M d, Y"}}</p>
+                        <p><strong>Total Amount:</strong> ${{order.total_amount}}</p>
+                    </div>
+                    
+                    <div class="order-items">
+                        <h4>Items in this order:</h4>
+                        {% for item in order.orderitem_set.all %}
+                        <div class="order-item">
+                            {% if item.book %}
+                                <img src="{{item.book.image.url}}" alt="{{item.book.title}}" width="60" height="80">
+                                <div class="item-details">
+                                    <p><strong>{{item.book.title}}</strong></p>
+                                    <p>Author: {{item.book.author}}</p>
+                                    <p>Quantity: {{item.quantity}}</p>
+                                    <p>Price per book: ${{item.price}}</p>
+                                    <p>Subtotal: ${{item.subtotal}}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>You haven't placed any orders yet.</p>
+                <a href="{% url 'books:home' %}">Start Shopping</a>
+            {% endif %}
         </div>
     </div>
-</body>
-</html>
+
+    {% endblock %}
+
+    {% block styling %}
+<style>
+.main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    
+}
+
+.info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.info p {
+    margin: 5px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.order-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    
+}
+
+.order-header {
+    background-color: #537fae97;
+    color: white;
+    padding: 15px;
+}
+
+.order-header h3 {
+    margin: 0 0 10px 0;
+}
+
+.order-header p {
+    margin: 5px 0;
+}
+
+.order-items {
+    padding: 15px;
+}
+
+.order-items h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item img {
+    margin-right: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.item-details p {
+    margin: 2px 0;
+    color: #666;
+}
+
+.item-details p strong {
+    color: #333;
+}
+</style>
+{% endblock %}

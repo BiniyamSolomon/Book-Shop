@@ -3,6 +3,7 @@
 
 {% block content %}
 
+<div class="main">
 <div class="container">
 <h1>Login Here</h1>
 <form method="POST" action="{% url 'books:login_view' %}">
@@ -16,9 +17,11 @@
     <input type="password" name="password" required><br>
 
     <button type="submit">Login</button>
+    <p id="no_account">Don't have an account? <a href="{% url 'books:register' %}">Register Here</a></p>
 
     </div>
 </form>
+</div>
 </div>
 {% endblock %}
 
@@ -26,11 +29,24 @@
 
 
 <style>
+
+    main {
+        width: 1300px;
+        margin: 0 auto 0 auto;
+        height: 1000px;
+        background-color: rgba(5, 61, 113, 0.187); 
+        position: fixed;
+        transform: translateX(70px);
+        
+              
+    }
+
+
 .container {
-    width: 430px;
+    width: 480px;
     margin: 100px auto;
     background-color: rgba(34, 100, 158, 0.133);
-    height: 430px;
+    height: 490px;
     border-radius: 25px;
     padding: 25px;
     position: static;    
@@ -47,9 +63,9 @@
 form {
     position: absolute;
     padding: 20px;
-    width: 390px;
+    width: 440px;
     margin: auto;
-    height: 335px;
+    height: 365px;
     background-color: rgba(34, 100, 158, 0.175);
     border-radius: 25px;
     
@@ -85,7 +101,7 @@ form {
 .inside button {
     width: 250px;
     height: 40px;
-    background-color: rgba(34, 100, 158, 0.418);
+    background-color: rgba(4, 52, 93, 0.532);
     margin: 0 auto;
     color: white;
     position: absolute;
@@ -97,6 +113,21 @@ form {
     border: none;
     border-radius: 7px;
     cursor: pointer;
+}
+
+#no_account {
+    margin: 70px auto 10px auto;
+    text-align: center;
+}
+
+#no_account a {
+    text-decoration: none;
+    color: rgb(5, 109, 36);
+}
+
+#no_account a:hover {
+    font-size: large;
+    color: blue;
 }
 </style>
 

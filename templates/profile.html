@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="main">
+
+    <div class="inside">
+
+            <div class="content">
+               <h1>Account Information</h1> 
+               <hr>
+               <p><strong>Username:</strong> {{user.username}}</p>
+               <p><strong>Email:</strong> {{user.email}}</p>
+               <p><strong>Member Since:</strong> {{user.date_joined|date:"M d, Y"}}</p>
+            </div>
+
+            <div class="link">
+                <h1>Quick Links</h1>
+                <hr>
+                <strong> <a href="{% url 'books:orders'%}">View All Orders</a></strong> 
+                <strong> <a href="{% url 'books:cart'%}">Shopping Cart</a></strong> 
+                <strong> <a href="{% url 'books:home'%}">Continue Shopping</a></strong> 
+            </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block styling %}
+
+<style>
+    .main {
+        width: 1300px;
+        margin: -10px auto 0 80px;
+        height: 100vh;
+        background-color: rgba(98, 158, 218, 0.336); 
+        position: fixed;      
+        padding: 0px; 
+        padding-top: 70px;  
+            
+    }
+
+    .inside {
+        width: 1300px;
+        margin: -10px auto 0 auto;
+        height: 600px;
+        background-color: rgba(158, 170, 181, 0.046); 
+        position: relative;      
+        padding: 20px; 
+        padding-top: 10px;      
+    }
+
+    .content {
+        width: 450px;
+        margin: 0 auto 0 50px;
+        height: 500px;
+        background-color: rgba(24, 60, 95, 0.101);  
+        float: left;     
+        padding: 40px; 
+        padding-top: 30px; 
+        border: 6px solid rgba(75, 136, 75, 0.661);
+        border-radius: 6px;
+        border-right: none;
+        border-bottom: none;
+        border-top: none;
+
+    }
+
+     .link {
+        width: 450px;
+        margin: 0 60px 0 auto;
+        height: 500px;
+        background-color: rgba(24, 60, 95, 0.101); 
+        float: right;     
+        padding: 40px; 
+        padding-top: 30px; 
+        border: 6px solid rgba(75, 136, 75, 0.661);
+        border-radius: 6px;
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+
+    }
+
+
+    .content p {
+        padding: 40px 0 10px 0;
+        font-size: 1.2em;
+        color: rgb(12, 13, 12);
+    }
+
+    .link a {
+         padding: 40px 0 10px 0;
+         font-size: 1.2em;
+         display: block;
+         text-decoration: none;
+    }
+
+    a:hover {
+        color: green;
+    }
+
+    hr {
+        border: 2px solid rgba(8, 103, 132, 0.572);
+    }
+</style>
+{% endblock %}
