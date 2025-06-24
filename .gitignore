@@ -38,6 +38,14 @@ tempo.html
 *.tmp
 *.temp
 
+# Project files
+*.code-workspace
+.vscode/
+*.sublime-project
+*.sublime-workspace
+project.json
+*.project
+
 # Python
 *.py[cod]
 *$py.class
